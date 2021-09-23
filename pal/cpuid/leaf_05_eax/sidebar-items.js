@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_smallest_monitor_line_size","Returns the current value of “Smallest monitor-line size”."],["get_smallest_monitor_line_size_from_value","Returns the value of “Smallest monitor-line size” in the given register value."]]});

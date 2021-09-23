@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_bus_frequency","Returns the current value of “Bus Frequency”."],["get_bus_frequency_from_value","Returns the value of “Bus Frequency” in the given register value."]]});

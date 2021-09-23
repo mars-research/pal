@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["ADDRESS",""],["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_bios_sign_id","Returns the current value of “bios_sign_id”."],["get_bios_sign_id_from_value","Returns the value of “bios_sign_id” in the given register value."]]});

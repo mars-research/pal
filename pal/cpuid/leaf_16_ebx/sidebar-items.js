@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_maximum_frequency","Returns the current value of “Maximum Frequency”."],["get_maximum_frequency_from_value","Returns the value of “Maximum Frequency” in the given register value."]]});

@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `&#x2F;home&#x2F;zhaofeng&#x2F;Git&#x2F;pal&#x2F;target&#x2F;debug&#x2F;build&#x2F;pal-021b292d3d462a42&#x2F;out&#x2F;src&#x2F;instruction&#x2F;mfence.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>mfence.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../../../../../../../../../../../storage.js"></script><script src="../../../../../../../../../../../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../../../../../../../../../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../../../../../../../../../../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../../../../../../../../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../../../../../../../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../../../../../../../../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../../../../../../../../../../../pal/index.html'><div class='logo-container rust-logo'><img src='../../../../../../../../../../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../../../../../../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../../../../../../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../../../../../../../../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1"> 1</span>
+<span id="2"> 2</span>
+<span id="3"> 3</span>
+<span id="4"> 4</span>
+<span id="5"> 5</span>
+<span id="6"> 6</span>
+<span id="7"> 7</span>
+<span id="8"> 8</span>
+<span id="9"> 9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+</pre><pre class="rust">
+
+<span class="comment">// mfence (Memory Fence): Performs a serializing operation on all load-from-</span>
+<span class="comment">// memory andstore-to-memory instructions that were issued prior the</span>
+<span class="comment">// MFENCEinstruction. This serializing operation guarantees that every load</span>
+<span class="comment">// andstore instruction that precedes the MFENCE instruction in program</span>
+<span class="comment">// orderbecomes globally visible before any load or store instruction</span>
+<span class="comment">// thatfollows 1 theMFENCEinstruction.TheMFENCEinstructionisorderedwithrespectt</span>
+<span class="comment">// oallloadandstoreinstructions,otherMFENCE instructions, any LFENCE and SFENCE</span>
+<span class="comment">// instructions, and anyserializing instructions (such as the CPUID</span>
+<span class="comment">// instruction). MFENCE does notserialize the instruction stream. Weakly</span>
+<span class="comment">// ordered memory types can beused to achieve higher processor performance</span>
+<span class="comment">// through such techniques asout-of-order issue, speculative reads, write-</span>
+<span class="comment">// combining, andwrite-collapsing. The degree to which a consumer of data</span>
+<span class="comment">// recognizes orknows that the data is weakly ordered varies among applications</span>
+<span class="comment">// and maybe unknown to the producer of this data. The MFENCE instruction</span>
+<span class="comment">// providesa performance-efficient way of ensuring load and store ordering</span>
+<span class="comment">// betweenroutines that produce weakly-ordered results and routines that</span>
+<span class="comment">// consumethat data. Processors are free to fetch and cache data</span>
+<span class="comment">// speculativelyfrom regions of system memory that use the WB, WC, and WT</span>
+<span class="comment">// memory types.This speculative fetching can occur at any time and is not tied</span>
+<span class="comment">// toinstruction execution. Thus, it is not ordered with respect to</span>
+<span class="comment">// executionsof the MFENCE instruction; data can be brought into the caches</span>
+<span class="comment">// specula-tively just before, during, or after the execution of an</span>
+<span class="comment">// MFENCEinstruction. This instruction’s operation is the same in</span>
+<span class="comment">// non-64-bitmodes and 64-bit mode. Specification of the instruction&#39;s opcode</span>
+<span class="comment">// aboveindicates a ModR/M byte of F0. For this instruction, the</span>
+<span class="comment">// processorignores the r/m field of the ModR/M byte. Thus, MFENCE is encoded</span>
+<span class="comment">// by anyopcode of the form 0F AE Fx, where x is in the range 0-7.</span>
+
+<span class="kw">extern</span> {
+    <span class="kw">fn</span> <span class="ident">pal_execute_mfence</span>() <span class="op">-</span><span class="op">&gt;</span> ();
+}
+
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">execute_mfence</span>() <span class="op">-</span><span class="op">&gt;</span> () {
+    <span class="kw">unsafe</span> { <span class="ident">pal_execute_mfence</span>() }
+}
+
+</pre></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../../../../../../../../../../" data-current-crate="pal" data-search-index-js="../../../../../../../../../../../../../search-index.js" data-search-js="../../../../../../../../../../../../../search.js"></div>
+    <script src="../../../../../../../../../../../../../main.js"></script><script src="../../../../../../../../../../../../../source-script.js"></script><script src="../../../../../../../../../../../../../source-files.js"></script>
+</body></html>

@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_bits_03_00","Returns the current value of “Number of Interrupt Thresholds in Digital Thermal Sensor”."],["get_bits_03_00_from_value","Returns the value of “Number of Interrupt Thresholds in Digital Thermal Sensor” in the given register value."]]});

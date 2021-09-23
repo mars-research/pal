@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_largest_monitor_line_size","Returns the current value of “Largest monitor-line size”."],["get_largest_monitor_line_size_from_value","Returns the value of “Largest monitor-line size” in the given register value."]]});

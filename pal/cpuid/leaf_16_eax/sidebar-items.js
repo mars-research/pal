@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_processor_base_frequency","Returns the current value of “Processor Base Frequency”."],["get_processor_base_frequency_from_value","Returns the value of “Processor Base Frequency” in the given register value."]]});

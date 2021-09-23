@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["ENCODING",""],["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."]]});

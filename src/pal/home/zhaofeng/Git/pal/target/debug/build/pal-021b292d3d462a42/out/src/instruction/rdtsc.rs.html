@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `&#x2F;home&#x2F;zhaofeng&#x2F;Git&#x2F;pal&#x2F;target&#x2F;debug&#x2F;build&#x2F;pal-021b292d3d462a42&#x2F;out&#x2F;src&#x2F;instruction&#x2F;rdtsc.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>rdtsc.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../../../../../../../../../../../storage.js"></script><script src="../../../../../../../../../../../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../../../../../../../../../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../../../../../../../../../../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../../../../../../../../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../../../../../../../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../../../../../../../../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../../../../../../../../../../../pal/index.html'><div class='logo-container rust-logo'><img src='../../../../../../../../../../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../../../../../../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../../../../../../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../../../../../../../../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1"> 1</span>
+<span id="2"> 2</span>
+<span id="3"> 3</span>
+<span id="4"> 4</span>
+<span id="5"> 5</span>
+<span id="6"> 6</span>
+<span id="7"> 7</span>
+<span id="8"> 8</span>
+<span id="9"> 9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+</pre><pre class="rust">
+<span class="kw">use</span> <span class="ident">cty::uint64_t</span>;
+
+<span class="comment">// rdtsc (Read Time-Stamp Counter): Reads the current value of the processor’s</span>
+<span class="comment">// time-stamp counter (a 64-bitMSR) into the EDX:EAX registers. The EDX</span>
+<span class="comment">// register is loaded with thehigh-order 32 bits of the MSR and the EAX</span>
+<span class="comment">// register is loaded with thelow-order 32 bits. (On processors that support</span>
+<span class="comment">// the Intel 64 architecture,the high-order 32 bits of each of RAX and RDX are</span>
+<span class="comment">// cleared.) The processormonotonically increments the time-stamp counter MSR</span>
+<span class="comment">// every clock cycle andresets it to 0 whenever the processor is reset. See</span>
+<span class="comment">// “Time Stamp Counter”in Chapter 17 of the Intel® 64 and IA-32 Architectures</span>
+<span class="comment">// SoftwareDeveloper’s Manual, Volume 3B, for specific details of the time</span>
+<span class="comment">// stampcounter behavior. The time stamp disable (TSD) flag in register</span>
+<span class="comment">// CR4restricts the use of the RDTSC instruction as follows. When the flag</span>
+<span class="comment">// isclear, the RDTSC instruction can be executed at any privilege level;</span>
+<span class="comment">// whenthe flag is set, the instruction can only be executed at privilege</span>
+<span class="comment">// level0. The time-stamp counter can also be read with the RDMSR</span>
+<span class="comment">// instruction,when executing at privilege level 0. The RDTSC instruction is</span>
+<span class="comment">// not aserializing instruction. It does not necessarily wait until all</span>
+<span class="comment">// previousinstructions have been executed before reading the counter.</span>
+<span class="comment">// Similarly,subsequent instructions may begin execution before the read</span>
+<span class="comment">// operation isperformed. The following items may guide software seeking to</span>
+<span class="comment">// orderexecutions of RDTSC: • If software requires RDTSC to be executed</span>
+<span class="comment">// onlyafter all previous instructions have executed and all previous loads</span>
+<span class="comment">// areglobally visible,1 it can execute LFENCE immediately before RDTSC. •</span>
+<span class="comment">// Ifsoftware requires RDTSC to be executed only after all previousinstructions</span>
+<span class="comment">// have executed and all previous loads and stores are globallyvisible, it can</span>
+<span class="comment">// execute the sequence MFENCE;LFENCE immediately beforeRDTSC. • If software</span>
+<span class="comment">// requires RDTSC to be executed prior to execution ofany subsequent</span>
+<span class="comment">// instruction (including any memory accesses), it canexecute the sequence</span>
+<span class="comment">// LFENCE immediately after RDTSC. This instructionwas introduced by the</span>
+<span class="comment">// Pentium processor. See “Changes to InstructionBehavior in VMX Non-Root</span>
+<span class="comment">// Operation” in Chapter 25 of the Intel® 64 andIA-32 Archi- tectures Software</span>
+<span class="comment">// Developer’s Manual, Volume 3C, for moreinformation about the behavior of</span>
+<span class="comment">// this instruction in VMX non-rootoperation.</span>
+
+<span class="kw">extern</span> {
+    <span class="kw">fn</span> <span class="ident">pal_execute_rdtsc</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">uint64_t</span>;
+}
+
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">execute_rdtsc</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">u64</span> {
+    <span class="kw">unsafe</span> { <span class="ident">pal_execute_rdtsc</span>() }
+}
+
+</pre></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../../../../../../../../../../" data-current-crate="pal" data-search-index-js="../../../../../../../../../../../../../search-index.js" data-search-js="../../../../../../../../../../../../../search.js"></div>
+    <script src="../../../../../../../../../../../../../main.js"></script><script src="../../../../../../../../../../../../../source-script.js"></script><script src="../../../../../../../../../../../../../source-files.js"></script>
+</body></html>

@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_processor_brand_string_continued","Returns the current value of “Processor Brand String Continued”."],["get_processor_brand_string_continued_from_value","Returns the value of “Processor Brand String Continued” in the given register value."]]});

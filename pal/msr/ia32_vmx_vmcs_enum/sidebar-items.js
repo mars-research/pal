@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["ADDRESS",""],["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_highest_index","Returns the current value of “highest_index”."],["get_highest_index_from_value","Returns the value of “highest_index” in the given register value."]]});

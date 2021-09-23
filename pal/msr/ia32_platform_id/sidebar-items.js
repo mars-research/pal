@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["ADDRESS",""],["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_platform_id","Returns the current value of “platform_id”."],["get_platform_id_from_value","Returns the value of “platform_id” in the given register value."]]});

@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_ia32_platform_dca_cap","Returns the current value of “IA32_PLATFORM_DCA_CAP”."],["get_ia32_platform_dca_cap_from_value","Returns the value of “IA32_PLATFORM_DCA_CAP” in the given register value."]]});

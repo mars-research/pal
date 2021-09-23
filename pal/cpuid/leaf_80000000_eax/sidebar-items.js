@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_maximum_input_value","Returns the current value of “Maximum Input Value”."],["get_maximum_input_value_from_value","Returns the value of “Maximum Input Value” in the given register value."]]});

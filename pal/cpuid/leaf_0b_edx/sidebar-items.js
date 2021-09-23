@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_x2apic_id","Returns the current value of “Bits 31 - 00: x2APIC ID”."],["get_x2apic_id_from_value","Returns the value of “Bits 31 - 00: x2APIC ID” in the given register value."]]});

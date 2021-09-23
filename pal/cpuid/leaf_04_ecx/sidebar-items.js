@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get_at_index","Returns the current value of the register."],["get_s_at_index","Returns the current value of “Bits 31-00: S = Number of Sets”."],["get_s_from_value","Returns the value of “Bits 31-00: S = Number of Sets” in the given register value."]]});

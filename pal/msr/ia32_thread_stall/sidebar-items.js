@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["ADDRESS",""],["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_stall_cycle_cnt","Returns the current value of “stall_cycle_cnt”."],["get_stall_cycle_cnt_from_value","Returns the value of “stall_cycle_cnt” in the given register value."]]});

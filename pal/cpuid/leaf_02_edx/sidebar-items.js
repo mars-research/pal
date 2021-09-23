@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["get_cache_and_tlb_information","Returns the current value of “Cache and TLB Information”."],["get_cache_and_tlb_information_from_value","Returns the value of “Cache and TLB Information” in the given register value."]]});

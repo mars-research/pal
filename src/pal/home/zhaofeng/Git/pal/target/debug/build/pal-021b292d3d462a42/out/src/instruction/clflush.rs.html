@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `&#x2F;home&#x2F;zhaofeng&#x2F;Git&#x2F;pal&#x2F;target&#x2F;debug&#x2F;build&#x2F;pal-021b292d3d462a42&#x2F;out&#x2F;src&#x2F;instruction&#x2F;clflush.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>clflush.rs - source</title><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../light.css"  id="themeStyle"><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../dark.css" disabled ><link rel="stylesheet" type="text/css" href="../../../../../../../../../../../../../ayu.css" disabled ><script id="default-settings" ></script><script src="../../../../../../../../../../../../../storage.js"></script><script src="../../../../../../../../../../../../../crates.js"></script><noscript><link rel="stylesheet" href="../../../../../../../../../../../../../noscript.css"></noscript><link rel="icon" type="image/svg+xml" href="../../../../../../../../../../../../../favicon.svg"><link rel="alternate icon" type="image/png" href="../../../../../../../../../../../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../../../../../../../../../../../favicon-32x32.png"><style type="text/css">#crate-search{background-image:url("../../../../../../../../../../../../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu" role="button">&#9776;</div><a href='../../../../../../../../../../../../../pal/index.html'><div class='logo-container rust-logo'><img src='../../../../../../../../../../../../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="18" height="18" alt="Pick another theme!" src="../../../../../../../../../../../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><nav class="sub"><form class="search-form"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" disabled autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../../../../../../../../../../../settings.html" title="settings"><img width="18" height="18" alt="Change settings" src="../../../../../../../../../../../../../wheel.svg"></a></div></form></nav><section id="main" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1"> 1</span>
+<span id="2"> 2</span>
+<span id="3"> 3</span>
+<span id="4"> 4</span>
+<span id="5"> 5</span>
+<span id="6"> 6</span>
+<span id="7"> 7</span>
+<span id="8"> 8</span>
+<span id="9"> 9</span>
+<span id="10">10</span>
+<span id="11">11</span>
+<span id="12">12</span>
+<span id="13">13</span>
+<span id="14">14</span>
+<span id="15">15</span>
+<span id="16">16</span>
+<span id="17">17</span>
+<span id="18">18</span>
+<span id="19">19</span>
+<span id="20">20</span>
+<span id="21">21</span>
+<span id="22">22</span>
+<span id="23">23</span>
+<span id="24">24</span>
+<span id="25">25</span>
+<span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+</pre><pre class="rust">
+<span class="kw">use</span> <span class="ident">cty::uint64_t</span>;
+
+<span class="comment">// clflush (Flush Cache Line): Invalidates from every level of the cache</span>
+<span class="comment">// hierarchy in the cachecoherence domain the cache line that contains the</span>
+<span class="comment">// linear addressspecified with the memory operand. If that cache line contains</span>
+<span class="comment">// modifieddata at any level of the cache hierarchy, that data is written back</span>
+<span class="comment">// tomemory. The source operand is a byte memory location. The availabilityof</span>
+<span class="comment">// CLFLUSH is indicated by the presence of the CPUID feature flag</span>
+<span class="comment">// CLFSH(CPUID.01H:EDX[bit 19]). The aligned cache line size affected is</span>
+<span class="comment">// alsoindicated with the CPUID instruction (bits 8 through 15 of the</span>
+<span class="comment">// EBXregister when the initial value in the EAX register is 1). The</span>
+<span class="comment">// memoryattribute of the page containing the affected line has no effect on</span>
+<span class="comment">// thebehavior of this instruction. It should be noted that processors are</span>
+<span class="comment">// freeto speculatively fetch and cache data from system memory regions</span>
+<span class="comment">// assigneda memory-type allowing for speculative reads (such as, the WB, WC,</span>
+<span class="comment">// and WTmemory types). PREFETCHh instructions can be used to provide</span>
+<span class="comment">// theprocessor with hints for this speculative behavior. Because</span>
+<span class="comment">// thisspeculative fetching can occur at any time and is not tied to</span>
+<span class="comment">// instructionexecution, the CLFLUSH instruction is not ordered with respect</span>
+<span class="comment">// toPREFETCHh instructions or any of the speculative fetching mechanisms(that</span>
+<span class="comment">// is, data can be specula- tively loaded into a cache line justbefore, during,</span>
+<span class="comment">// or after the execution of a CLFLUSH instruction thatreferences the cache</span>
+<span class="comment">// line). Executions of the CLFLUSH instruction areordered with respect to each</span>
+<span class="comment">// other and with respect to writes, locked 1read-modify-write</span>
+<span class="comment">// instructions,fence instructions,and executions ofCLFLUSHOPT to the same</span>
+<span class="comment">// cache line. They are not ordered with respect toexecutions of CLFLUSHOPT to</span>
+<span class="comment">// different cache lines. The CLFLUSHinstruction can be used at all privilege</span>
+<span class="comment">// levels and is subject to allpermission checking and faults asso- ciated with</span>
+<span class="comment">// a byte load (and inaddition, a CLFLUSH instruction is allowed to flush a</span>
+<span class="comment">// linear address inan execute- only segment). Like a load, the CLFLUSH</span>
+<span class="comment">// instruction sets theA bit but not the D bit in the page tables. In some</span>
+<span class="comment">// implementations, theCLFLUSH instruction may always cause transactional abort</span>
+<span class="comment">// withTransactional Synchronization Extensions (TSX). The CLFLUSH</span>
+<span class="comment">// instructionis not expected to be commonly used inside typical transactional</span>
+<span class="comment">// regions.However, programmers must not rely on CLFLUSH instruction to force</span>
+<span class="comment">// atransactional abort, since whether they cause transactional abort</span>
+<span class="comment">// isimplementation dependent. The CLFLUSH instruction was introduced with</span>
+<span class="comment">// theSSE2 extensions; however, because it has its own CPUID feature flag,</span>
+<span class="comment">// itcan be implemented in IA-32 processors that do not include the</span>
+<span class="comment">// SSE2extensions. Also, detecting the pres- ence of the SSE2 extensions</span>
+<span class="comment">// withthe CPUID instruction does not guarantee that the CLFLUSH instruction</span>
+<span class="comment">// isimple- mented in the processor. CLFLUSH operation is the same innon-64-bit</span>
+<span class="comment">// modes and 64-bit mode.</span>
+
+<span class="kw">extern</span> {
+    <span class="kw">fn</span> <span class="ident">pal_execute_clflush</span>(<span class="ident">address</span>: <span class="ident">uint64_t</span>) <span class="op">-</span><span class="op">&gt;</span> ();
+}
+
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">execute_clflush</span>(<span class="ident">address</span>: <span class="ident">u64</span>) <span class="op">-</span><span class="op">&gt;</span> () {
+    <span class="kw">unsafe</span> { <span class="ident">pal_execute_clflush</span>(<span class="ident">address</span>) }
+}
+
+</pre></div>
+</section><section id="search" class="content hidden"></section><div id="rustdoc-vars" data-root-path="../../../../../../../../../../../../../" data-current-crate="pal" data-search-index-js="../../../../../../../../../../../../../search-index.js" data-search-js="../../../../../../../../../../../../../search.js"></div>
+    <script src="../../../../../../../../../../../../../main.js"></script><script src="../../../../../../../../../../../../../source-script.js"></script><script src="../../../../../../../../../../../../../source-files.js"></script>
+</body></html>

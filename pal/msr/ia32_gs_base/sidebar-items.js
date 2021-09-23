@@ -1,0 +1,1 @@
+initSidebarItems({"constant":[["ADDRESS",""],["LONG_NAME",""],["NAME",""]],"fn":[["get","Returns the current value of the register."],["set","Sets the value of the register."]]});
